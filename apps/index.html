@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .form-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="text"], input[type="number"], select {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .checkbox-group, .radio-group {
+            display: flex;
+            align-items: center;
+        }
+
+        .checkbox-group input {
+            margin-right: 10px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            border: none;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .submit-btn:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Payment Form</h2>
+        <form id="paymentForm" novalidate>
+            <div class="form-group">
+                <label for="full-name">Full Name:</label>
+                <input type="text" id="full-name" name="full-name">
+                <div class="error-message" id="name-error">Please enter your full name.</div>
+            </div>
+
+            <div class="form-group">
+                <label for="last-four-digits">Last 4 Digits:</label>
+                <input type="text" id="last-four-digits" name="last-four-digits">
+                <div class="error-message" id="digits-error">Please enter exactly 4 digits.</div>
+            </div>
+
+            <div class="form-group">
+                <label>Expiry Date:</label>
+                <div style="display: flex; gap: 10px;">
+                    <input type="number" id="expiry-month" placeholder="MM" min="1" max="12">
+                    <input type="number" id="expiry-year" placeholder="YYYY" min="2023">
+                </div>
+                <div class="error-message" id="expiry-error">Please enter a valid expiry date (month and year).</div>
+            </div>
+
+            <div class="form-group radio-group">
+                <label>Card Type:</label>
+                <label><input type="radio" name="card-type" value="visa"> Visa</label>
+                <label><input type="radio" name="card-type" value="master-card"> MasterCard</label>
+                <div class="error-message" id="card-type-error">Please select a card type.</div>
+            </div>
+
+            <div class="form-group">
+                <label for="item-dropdown">Select an Item:</label>
+                <select id="item-dropdown" name="item-dropdown">
+                    <option value="">Choose an item</option>
+                    <option value="item0">Item 0</option>
+                    <option value="item1">Item 1</option>
+                    <option value="item2">Item 2</option>
+                    <option value="item3">Item 3</option>
+                    <option value="item4">Item 4</option>
+                    <option value="item5">Item 5</option>
+                </select>
+                <div class="error-message" id="item-error">Please select an item from the dropdown.</div>
+            </div>
+
+            <div class="form-group checkbox-group">
+                <input type="checkbox" id="terms" name="terms">
+                <label for="terms">I agree to the terms and conditions</label>
+                <div class="error-message" id="terms-error">You must agree to the terms and conditions.</div>
+            </div>
+
+            <button type="submit" class="submit-btn">Continue</button>
+        </form>
+    </div>
+
+    <script>
+        const form = document.getElementById('paymentForm');
+        const lastFourDigitsInput = document.getElementById('last-four-digits');
+        const fullNameInput = document.getElementById('full-name');
+        const expiryMonthInput = document.getElementById('expiry-month');
+        const expiryYearInput = document.getElementById('expiry-year');
+        const cardTypeInputs = document.getElementsByName('card-type');
+        const itemDropdown = document.getElementById('item-dropdown');
+        const termsCheckbox = document.getElementById('terms');
+
+        const nameError = document.getElementById('name-error');
+        const digitsError = document.getElementById('digits-error');
+        const expiryError = document.getElementById('expiry-error');
+        const cardTypeError = document.getElementById('card-type-error');
+        const itemError = document.getElementById('item-error');
+        const termsError = document.getElementById('terms-error');
+
+        // Prevent HTML5 form validation and use custom validation
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            let isValid = true;
+
+            // Full Name Validation
+            if (!fullNameInput.value) {
+                nameError.style.display = 'block';
+                isValid = false;
+            } else {
+                nameError.style.display = 'none';
+            }
+
+            // Last 4 Digits Validation
+            if (lastFourDigitsInput.value.length !== 4) {
+                digitsError.style.display = 'block';
+                isValid = false;
+            } else {
+                digitsError.style.display = 'none';
+            }
+
+            // Expiry Date Validation
+            if (!expiryMonthInput.value || !expiryYearInput.value) {
+                expiryError.style.display = 'block';
+                isValid = false;
+            } else {
+                expiryError.style.display = 'none';
+            }
+
+            // Card Type Validation
+            let cardTypeSelected = false;
+            for (let card of cardTypeInputs) {
+                if (card.checked) {
+                    cardTypeSelected = true;
+                    break;
+                }
+            }
+            if (!cardTypeSelected) {
+                cardTypeError.style.display = 'block';
+                isValid = false;
+            } else {
+                cardTypeError.style.display = 'none';
+            }
+
+            // Dropdown Validation
+            if (!itemDropdown.value) {
+                itemError.style.display = 'block';
+                isValid = false;
+            } else {
+                itemError.style.display = 'none';
+            }
+
+            // Checkbox Validation
+            if (!termsCheckbox.checked) {
+                termsError.style.display = 'block';
+                isValid = false;
+            } else {
+                termsError.style.display = 'none';
+            }
+
+            // If form is valid, allow submission
+            if (isValid) {
+                form.submit();
+            }
+        });
+
+        // Validation: Only allow digits in the "Last 4 Digits" input
+        lastFourDigitsInput.addEventListener('input', function() {
+            this.value = this.value.replace(/\D/g, '').slice(0, 4);  // Only digits, max 4 characters
+        });
+    </script>
+</body>
+</html>
